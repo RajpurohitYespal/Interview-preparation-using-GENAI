@@ -6,11 +6,19 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
-}))
+// app.use(cors({
+//     origin: "http://localhost:5173",
+//     credentials: true
+// }))
 
+app.use(cors({
+  origin: [
+    'https://interview-preparation-kappa.vercel.app', // Your Vercel frontend URL
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true
+}));
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
