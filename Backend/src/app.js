@@ -6,21 +6,20 @@ const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
-// app.use(cors({
-//     origin: "http://localhost:5173",
-//     credentials: true
-// }))
 
-const cors = require("cors");
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    // Allow requests with no origin (like Postman or server-to-server)
     if (!origin) return callback(null, true);
 
-    // Allow local development and any vercel.app subdomain for your project
+    // Allow local development ports or any *.vercel.app deployment
     if (
-      origin.includes("localhost") ||
+      allowedOrigins.includes(origin) ||
       origin.endsWith(".vercel.app")
     ) {
       return callback(null, true);
@@ -28,17 +27,23 @@ app.use(cors({
 
     return callback(new Error("Not allowed by CORS"));
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+};
+
+// Apply CORS middleware globally
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight OPTIONS requests across all routes
+app.options("*", cors(corsOptions));
+
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
 
-
 /* using all the routes here */
 app.use("/api/auth", authRouter)
 app.use("/api/interview", interviewRouter)
-
-
 
 module.exports = app
