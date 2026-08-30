@@ -11,12 +11,23 @@ app.use(cookieParser())
 //     credentials: true
 // }))
 
+const cors = require("cors");
+
 app.use(cors({
-  origin: [
-    'https://interview-preparation-kappa.vercel.app', // Your Vercel frontend URL
-    'http://localhost:5173',
-    'http://localhost:3000'
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    if (!origin) return callback(null, true);
+
+    // Allow local development and any vercel.app subdomain for your project
+    if (
+      origin.includes("localhost") ||
+      origin.endsWith(".vercel.app")
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true
 }));
 /* require all the routes here */
