@@ -35,8 +35,7 @@ const corsOptions = {
 // Apply CORS middleware globally
 app.use(cors(corsOptions));
 
-// Explicitly handle preflight OPTIONS requests across all routes
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
