@@ -35,7 +35,7 @@ const corsOptions = {
 // Apply CORS middleware globally
 app.use(cors(corsOptions));
 
-app.use(cors(corsOptions));
+
 
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
